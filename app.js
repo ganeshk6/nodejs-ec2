@@ -1,29 +1,17 @@
-const path = require("path");
-const express = require('express');
+const http = require('http');
 
-const userRouter = require('./routes/userRouter');
-const listngRouter = require('./routes/listingRouter');
-const pageNotFound = require('./routes/404Router');
-const rootDir = require('./utils/pathUtil');
+const users = [
+    {id: 1, name: "John Doe", email: "john.doe@example.com"},
+    {id: 2, name: "John Doe", email: "john.doe@example.com"},
+    {id: 3, name: "John Doe", email: "john.doe@example.com"}
+]
 
-const app = express();
-const PORT = 3000;
+const server = http.createServer((req, res)=>{
+    res.writeHead(200, {"content-type": "application/json"});
 
-app.use(express.static(path.join(rootDir, "public")));
+    res.end(JSON.stringify(users))
+})
 
-app.use("/", (req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
-
-app.get('/', (req, res, next) => {
-    res.sendFile(path.join(rootDir, "./views/home.html"));
-});
-
-app.use('/user', userRouter);
-app.use('/', listngRouter);
-app.use(pageNotFound);
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+server.listen(3000, ()=>{
+    console.log("Server running on port 3000");
+})
